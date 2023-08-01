@@ -25,7 +25,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['linkify-tai1.onrender.com']
+ALLOWED_HOSTS = ['linkify-tai1.onrender.com', '127.0.0.1']
 
 
 #AUTH_USER_MODEL = 'user.CustomUser'

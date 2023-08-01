@@ -74,12 +74,13 @@
         }
         .copied {
             position: absolute;
-            top: 50px;
+            top: 30px;
             right: 20px;
             background-color: #000;
             color: #fff;
-            padding: 5px;
+            padding: 10px;
             display: none;
+            font-size: 14px;
         }
         form input, .card .action {
             width: 100%;
@@ -232,7 +233,7 @@
             elem.select();
             elem.setSelectionRange(0, 99999);
             document.execCommand("copy");
-            $('.copied').show()
+            $('.copied').show().delay(5000).fadeOut();
         })
     </script>
 </body>
