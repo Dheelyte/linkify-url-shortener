@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linkify</title>
+    <style>
+        html {
+            background: url('https://img.freepik.com/free-vector/flat-vivid-modern-background_23-2148889928.jpg?w=826&t=st=1690783453~exp=1690784053~hmac=44dfe0ba48002e51906ca9bc0acbaed37571583e6a9a74167a8fc6ec0194b6a1') no-repeat center center fixed;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        body {
+            font-family: Verdana, 'Roboto', sans-serif, Monospace;
+        }
+        .header {
+            text-align: center;
+            color: #fff;
+            margin-top: 40px;
+        }
+        .header p {
+            color: orange;
+            font-size: 20px;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 60px;
+        }
+        .content {
+            position: relative;
+            width: 85%;
+            max-width: 350px;
+            background-color: #fff;
+            color: #797979;
+            padding: 40px;
+            border-radius: 10px;
+        }
+        .card {
+            position: relative;
+            padding: 10px 20px 5px;
+            text-align: center;
+            color: #fff;
+            margin-bottom: 40px;
+            border-radius: 10px;
+        }
+        .success {
+            background-color: rgb(56, 184, 56);
+        }
+        .danger {
+            background-color: rgb(245, 72, 72);
+        }
+        .card .actions {
+            display: flex;
+        }
+        .card .action:first-child {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+        .card .action:nth-child(2) {
+            width: 30%;
+            cursor: pointer;
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+            background-color: rgb(208, 161, 252);
+        }
+        .card .action:focus {
+            outline: 4px solid rgb(208, 161, 252);
+        }
+        .copied {
+            position: absolute;
+            top: 50px;
+            right: 20px;
+            background-color: #000;
+            color: #fff;
+            padding: 5px;
+            display: none;
+        }
+        form input, .card .action {
+            width: 100%;
+            border: 1px solid #d8d8d8;
+            outline: none;
+            margin: 15px 0 20px;
+            height: 40px;
+            border-radius: 5px;
+            display: block;
+            background-color: #f0f6ff;
+            box-sizing: border-box;
+            padding-left: 10px;
+        }
+        form input:focus:not([type="submit"]):not(:read-only) {
+            outline: 4px solid rgb(208, 161, 252);
+        }
+        form .extra {
+            display: flex;
+        }
+        form .extra input:nth-child(1) {
+            background-color: #eeeeee;
+            width: 50%;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+            text-align: center;
+            border: 1px solid #d1d0d0;
+        }
+        form .extra input:nth-child(2) {
+            width:  75%;
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+        form input[type="submit"] {
+            width: 100%;
+            cursor: pointer;
+            margin-bottom: 0;
+            background-color: orange;
+            border: 1px solid orange;
+            color: #fff;
+            font-weight: bold;
+        }
+        form input[type="submit"]:hover {
+            width: 100%;
+            cursor: pointer;
+            margin-bottom: 0;
+            background-color: rgb(235, 152, 0);
+            border: 1px solid orange;
+            color: #fff;
+            font-weight: bold;
+        }
+        .loading {
+            position: absolute;
+            bottom: 62px;
+            right: 70px;
+            font-size: xx-large;
+            color: #fff;
+            display: none;
+        }
+        .footer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 30px;
+        }
+        .footer p {
+            text-align: center;
+            color: #fff;
+        }
+        .footer a {
+            color: #fff;
+            text-decoration: underline;
+        }
+        @media screen and (max-width: 490px) {
+            .content {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <p>Linkify</p>
+        <h1>Link Shortner</h1>
+    </div>
+    <div class="container">
+        <div class="content">
+            <form id="submit">
+                <label for="url">Enter long link</label>
+                <input type="url" id="link-input" placeholder="Enter http(s):// link">
+                <div>
+                    <label for="short_url">New link (optional)</label>
+                    <div class="extra">
+                        <input type="text" value="{{ request.META.HTTP_HOST }}/" readonly>
+                        <input type="text" id="short-link-input" placeholder="New url...">
+                    </div>
+                </div>
+                <input type="submit" value="Shorten">
+                <span class="loading">...</span>
+            </form>
+        </div>
+    </div>
+    <div class="footer">
+        <p>Made with ❤ by <a href="https://www.linkedin.com/in/delight-olagbuji">Delight</a></p>
+    </div>
+    
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        $('#submit').submit(function(e){
+            e.preventDefault();
+            $('.loading').show()
+            $('.card').hide()
+            $.ajax({
+                type: 'POST',
+                url: 'http://127.0.0.1:8000/',
+                data: {
+                    link: $('#link-input').val(),
+                    short_link_id: $('#short-link-input').val(),
+                },
+                success: function(response) {
+                    $('.loading').hide()
+                    $('.content').prepend(`
+                        <div class="card success">
+                            <p>Link shortened successfully</p>
+                            <div class="actions">
+                                <input class="action" id="link" readonly>
+                                <button class="action" id="copy">Copy</button>
+                                <span class="copied">Copied</span>
+                            </div>
+                        </div>
+                    `);
+                    $('#link').val('{{ request.META.HTTP_HOST }}'+response.absolute_url)
+                },
+                error: function(response) {
+                    $('.loading').hide()
+                    $('.content').prepend(`
+                        <div class="card danger">
+                            <p>${JSON.stringify(response.responseText)
+                                .replace(/["{}\[\]\\]/g, '')}
+                            </p>
+                        </div>
+                    `);
+                }
+            })
+        })
+
+        $(document).on('click', '#copy', (e)=>{
+            var elem = document.querySelector('#link');
+            elem.select();
+            elem.setSelectionRange(0, 99999);
+            document.execCommand("copy");
+            $('.copied').show()
+        })
+    </script>
+</body>
+</html>
