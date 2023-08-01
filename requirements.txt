@@ -7,6 +7,7 @@ defusedxml==0.7.1
 Django==4.2.3
 django-filter==23.2
 djangorestframework==3.14.0
+gunicorn==21.2.0
 httpie==3.2.2
 idna==3.4
 importlib-metadata==6.8.0
@@ -14,6 +15,7 @@ Markdown==3.4.4
 markdown-it-py==3.0.0
 mdurl==0.1.2
 multidict==6.0.4
+packaging==23.1
 Pygments==2.15.1
 PySocks==1.7.1
 pytz==2023.3
